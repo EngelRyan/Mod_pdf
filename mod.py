@@ -24,76 +24,47 @@ def extrair_informacoes(caminho_pdf):
         descricao_pagamento_match = re.search(r'([^\n\r]*)\s*Descrição do Pagamento:', texto)
         data_transacao_match = re.search(r'Data da Transação:\s*(\d{2}/\d{2}/\d{4})', texto)
         pix_match = re.search(r'([^\n\r]*)\s*Valor:', texto)
-        data_pagamento_match = re.search(r'Data do Pagamento:\s*(\d{2}/\d{2}/\d{4})', texto)
+        data_pagamento_match = re.search(r'Realizado em:\s*(\d{2}/\d{2}/\d{4})', texto)
         hora_pagamento_match = re.search(r'Hora do Pagamento:\s*(\d{2}/\d{2}/\d{4})', texto)
 
 
+        # Verificações para evitar que acessos inválidos causem erros
         if descricao_pagamento_match and data_transacao_match:
-            # Capturar descrição do pagamento
-            data_transacao = data_transacao_match.group(1)
+            print("Encontrado: Descrição do Pagamento e Data da Transação.")
             descricao_pagamento = descricao_pagamento_match.group(1).strip()
-            
-            # Limitar a descrição para as três últimas palavras
-            palavras = descricao_pagamento.split()
-            if len(palavras) >= 2:
-                descricao_pagamento_limitada = ' '.join(palavras[-3:])
-                descricao_pagamento_limitada = corrigir_texto_grudado(descricao_pagamento_limitada)
-                descricao_pagamento_limitada = remover_palavras_indesejadas(descricao_pagamento_limitada)
-
-            else:
-                descricao_pagamento_limitada = descricao_pagamento
-            
-            # Converter data para o formato desejado
-            data_formatada = re.sub(r'(\d{2})/(\d{2})/(\d{4})', r'\1.\2.\3', data_transacao)
-            return descricao_pagamento_limitada, data_formatada
+            data_transacao = data_transacao_match.group(1)
         
-        elif pix_match and data_transacao_match:
-            # Capturar Descição do pix
+        elif pix_match and data_pagamento_match:
+            print("Encontrado: PIX e Data da Transação.")
             descricao_pagamento = pix_match.group(1).strip()
-            data_transacao = data_transacao_match.group(1)
-            
-            # Converter data para o formato desejado
-            data_formatada = re.sub(r'(\d{2})/(\d{2})/(\d{4})', r'\1.\2.\3', data_transacao)
-            return pix, data_formatada
-        
-        elif descricao_pagamento_match and data_pagamento_match :
-            # Capturar descrição do pagamento
             data_transacao = data_pagamento_match.group(1)
-            descricao_pagamento = descricao_pagamento_match.group(1).strip()
-            
-            # Limitar a descrição para as três últimas palavras
-            palavras = descricao_pagamento.split()
-            if len(palavras) >= 2:
-                descricao_pagamento_limitada = ' '.join(palavras[-3:])
-                descricao_pagamento_limitada = corrigir_texto_grudado(descricao_pagamento_limitada)
-                descricao_pagamento_limitada = remover_palavras_indesejadas(descricao_pagamento_limitada)
 
-            else:
-                descricao_pagamento_limitada = descricao_pagamento
-                
-            # Converter data para o formato desejado
-            data_formatada = re.sub(r'(\d{2})/(\d{2})/(\d{4})', r'\1.\2.\3', data_transacao)
-            return descricao_pagamento_limitada, data_formatada
-        
+        elif descricao_pagamento_match and data_pagamento_match:
+            print("Encontrado: Descrição do Pagamento e Data do Pagamento.")
+            descricao_pagamento = descricao_pagamento_match.group(1).strip()
+            data_transacao = data_pagamento_match.group(1)
+
         elif hora_pagamento_match:
-            # Capturar descrição do pagamento
+            print("Encontrado: Hora do Pagamento.")
+            descricao_pagamento = descricao_pagamento_match.group(1).strip() if descricao_pagamento_match else "Descrição indisponível"
             data_transacao = hora_pagamento_match.group(1)
-            descricao_pagamento = descricao_pagamento_match.group(1).strip()
-            
-            # Limitar a descrição para as três últimas palavras
-            palavras = descricao_pagamento.split()
-            if len(palavras) >= 2:
-                descricao_pagamento_limitada = ' '.join(palavras[-3:])
-                descricao_pagamento_limitada = corrigir_texto_grudado(descricao_pagamento_limitada)
-                descricao_pagamento_limitada = remover_palavras_indesejadas(descricao_pagamento_limitada)
 
-            else:
-                descricao_pagamento_limitada = descricao_pagamento
-                
-            # Converter data para o formato desejado
-            data_formatada = re.sub(r'(\d{2})/(\d{2})/(\d{4})', r'\1.\2.\3', data_transacao)
-            return descricao_pagamento_limitada, data_formatada
-            
+        else:
+            print("Nenhum padrão de pagamento correspondente foi encontrado.")
+            return None, None
+        
+        # Limitar a descrição para as três últimas palavras
+        palavras = descricao_pagamento.split()
+        if len(palavras) >= 2 and not pix_match:
+            descricao_pagamento_limitada = ' '.join(palavras[-3:])
+            descricao_pagamento_limitada = corrigir_texto_grudado(descricao_pagamento_limitada)
+            descricao_pagamento_limitada = remover_palavras_indesejadas(descricao_pagamento_limitada)
+        else:
+            descricao_pagamento_limitada = descricao_pagamento
+        
+        # Converter data para o formato desejado
+        data_formatada = re.sub(r'(\d{2})/(\d{2})/(\d{4})', r'\1.\2.\3', data_transacao)
+        return descricao_pagamento_limitada, data_formatada
 
     except Exception as e:
         print(f'Erro ao ler o PDF {caminho_pdf}: {e}')
