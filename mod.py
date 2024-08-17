@@ -19,8 +19,9 @@ def extrair_informacoes(caminho_pdf):
         # Exibir o texto extraído para depuração
         print("Texto extraído do PDF:")
         print(texto)
+        print('=================================================')
         
-        # Ajustar regex para capturar o texto antes do marcador
+        # Ajustar regex para capturar o texto
         descricao_pagamento_match = re.search(r'([^\n\r]*)\s*Descrição do Pagamento:', texto)
         data_transacao_match = re.search(r'Data da Transação:\s*(\d{2}/\d{2}/\d{4})', texto)
         pix_match = re.search(r'([^\n\r]*)\s*Valor:', texto)
@@ -35,7 +36,7 @@ def extrair_informacoes(caminho_pdf):
             data_transacao = data_transacao_match.group(1)
         
         elif pix_match and data_pagamento_match:
-            print("Encontrado: PIX e Data da Transação.")
+            print("Encontrado: PIX e Data da Pagamento.")
             descricao_pagamento = pix_match.group(1).strip()
             data_transacao = data_pagamento_match.group(1)
 
