@@ -58,7 +58,6 @@ def extrair_informacoes(caminho_pdf):
         palavras = descricao_pagamento.split()
         if len(palavras) >= 2 and not pix_match:
             descricao_pagamento_limitada = ' '.join(palavras[-3:])
-            descricao_pagamento_limitada = corrigir_texto_grudado(descricao_pagamento_limitada)
             descricao_pagamento_limitada = remover_palavras_indesejadas(descricao_pagamento_limitada)
         else:
             descricao_pagamento_limitada = descricao_pagamento
@@ -70,12 +69,6 @@ def extrair_informacoes(caminho_pdf):
     except Exception as e:
         print(f'Erro ao ler o PDF {caminho_pdf}: {e}')
         return None, None
-    
-# Função para corrigir texto com palavras grudadas
-def corrigir_texto_grudado(texto):
-    # Adiciona um espaço antes de palavras específicas que parecem estar coladas
-    texto_corrigido = re.sub(r'([a-z])([A-Z])', r'\1 \2', texto)
-    return texto_corrigido
 
 def remover_palavras_indesejadas(texto):
     # Lista de palavras indesejadas que você quer remover
