@@ -100,7 +100,7 @@ for nome_arquivo in os.listdir(pasta_origem):
                 try:
                     if os.path.exists(caminho_arquivo):
                         os.rename(caminho_arquivo, novo_caminho_arquivo)
-                        print(f'Arquivo renomeado para: {novo_nome_arquivo}')
+                        print(f'# Arquivo renomeado para: {novo_nome_arquivo}')
                     else:
                         print(f'O arquivo original não foi encontrado: {caminho_arquivo}')
                 except Exception as e:
