@@ -3,9 +3,9 @@ import re
 from PyPDF2 import PdfReader
 import shutil
 
-# Caminho para a pasta na sua área de trabalho
-pasta_origem = 'C:\\Users\\ryane\\OneDrive\\Área de Trabalho\\teste'
-pasta_destino = 'C:\\Users\\ryane\\OneDrive\\Área de Trabalho\\pdf_modificado'
+# Caminho para as pastas
+pasta_origem = 'Caminho da pasta de origem'
+pasta_destino = 'Caminho da pasta de destino'
 
 
 # Função para ler e extrair informações específicas do PDF
@@ -22,6 +22,7 @@ def extrair_informacoes(caminho_pdf):
         print('=================================================')
         
         # Ajustar regex para capturar o texto
+        # Ajuste o formato do regex para o seu arquivo, aqui estão alguns exemplos de como eu usei
         descricao_pagamento_match = re.search(r'([^\n\r]*)\s*Descrição do Pagamento:', texto)
         data_transacao_match = re.search(r'Data da Transação:\s*(\d{2}/\d{2}/\d{4})', texto)
         pix_match = re.search(r'([^\n\r]*)\s*Valor:', texto)
@@ -30,6 +31,7 @@ def extrair_informacoes(caminho_pdf):
 
 
         # Verificações para evitar que acessos inválidos causem erros
+        # Testa as diferentes combinações de formato dos arquivos
         if descricao_pagamento_match and data_transacao_match:
             print("Encontrado: Descrição do Pagamento e Data da Transação.")
             descricao_pagamento = descricao_pagamento_match.group(1).strip()
@@ -55,6 +57,7 @@ def extrair_informacoes(caminho_pdf):
             return None, None
         
         # Limitar a descrição para as três últimas palavras
+        # Pode ser ajustado para a sua necessidade
         palavras = descricao_pagamento.split()
         if len(palavras) >= 2 and not pix_match:
             descricao_pagamento_limitada = ' '.join(palavras[-3:])
@@ -72,7 +75,7 @@ def extrair_informacoes(caminho_pdf):
 
 def remover_palavras_indesejadas(texto):
     # Lista de palavras indesejadas que você quer remover
-    palavras_indesejadas = ['Eletrônica','Autenticação',":"]
+    palavras_indesejadas = ['Exemplo1','Exemplo2']
     
     for palavra in palavras_indesejadas:
         # Remove todas as ocorrências da palavra indesejada
