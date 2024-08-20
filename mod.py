@@ -99,6 +99,14 @@ for nome_arquivo in os.listdir(pasta_origem):
             novo_nome_arquivo = f'{descricao_pagamento} {data_formatada}.pdf'
             novo_caminho_arquivo = os.path.join(pasta_origem, novo_nome_arquivo)
             
+            # Adicionar sufixo numérico se o arquivo já existir na pasta de destino
+            contador = 1
+            caminho_destino_final = os.path.join(pasta_destino, novo_nome_arquivo)
+            while os.path.exists(caminho_destino_final):
+                novo_nome_arquivo = f'{descricao_pagamento} {data_formatada} ({contador}).pdf'
+                caminho_destino_final = os.path.join(pasta_destino, novo_nome_arquivo)
+                contador += 1
+        
             if not os.path.exists(novo_caminho_arquivo):
                 try:
                     if os.path.exists(caminho_arquivo):
